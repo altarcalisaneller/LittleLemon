@@ -15,8 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin 
 from django.urls import path, include  
- 
+from rest_framework import routers
+from restaurant import views
+
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'booking', views.BookingViewSet)
+# router.register(r'menu', views.MenuViewSet)
+
+
 urlpatterns = [ 
     path('admin/', admin.site.urls), 
-    path('restaurant/', include('restaurant.urls')),
+    path('api/', include(router.urls)),
+    path('api/menu/', views.MenuItemView.as_view(), name="menu"), # DefaultRouter yalnızca viewsets.ModelViewSet tabanlı görünümleri destekler. O nedenle yukarda register edemiyorum ve dolayısıyla root da göremiyorum.
+    path('api/menu/<int:pk>', views.SingleMenuItemView.as_view()),
+    path('', include('restaurant.urls')),
 ]
