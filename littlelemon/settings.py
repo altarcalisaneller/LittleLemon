@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "restaurant",
-    "rest_framework",
+    "rest_framework", # API geliştirmek için. pip install djangorestframework
+    "rest_framework.authtoken", # Token authtantication için. buraya ekledikten sonra migrate komutları çalıştırılmalı.
+    "djoser",    
 ]
 
 MIDDLEWARE = [
@@ -89,6 +91,7 @@ DATABASES = {
     #     'PASSWORD': 'your_password',   
     #     'HOST': '127.0.0.1',   
     #     'PORT': '3306',   
+    #     'CONN_MAX_AGE': 300,  # Bağlantıların 300 saniye (5 dakika) açık kalmasını sağlar
     #     'OPTIONS': {   
     #         'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"   
     #     } 
@@ -139,3 +142,18 @@ STATICFILES_DIRS = [ # looking for static directory which is not a part of any a
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        #'rest_framework_xml.renderers.XMLRenderer', # pip install djangorestframework-xml
+        
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        #'rest_framework.authentication.SessionAuthentication', # Token yöntemi ile ilerlicem.
+    ),
+}
+
+DJOSER={"USER_ID_FIELD":"username"}

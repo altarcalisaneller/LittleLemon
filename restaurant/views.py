@@ -1,6 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.decorators import api_view, permission_classes
+#from rest_framework.views import APIView
+from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 from .models import Menu, Booking
@@ -20,6 +23,7 @@ class MenuItemView(generics.ListCreateAPIView):
             return [IsAdminUser()]
         else:
             return [AllowAny()]
+
 
 # class MenuViewSet(viewsets.ModelViewSet): # Yukarıdaki kodun ModelViewSet versiyonu
 #     queryset = Menu.objects.all()
@@ -41,7 +45,7 @@ class SingleMenuItemView(generics.RetrieveUpdateDestroyAPIView):
                 or self.request.method == 'DELETE' or self.request.method == 'PATCH':
             return [IsAdminUser()]
         return [AllowAny()]
-     
+
       
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = Booking.objects.all()
@@ -66,7 +70,26 @@ class BookingViewSet(viewsets.ModelViewSet):
     #     return super().get_serializer_class()
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
-    queryset = User.objects.all()
+# # djoser kullandığım için user işlemleri için aşağıdaki kod bloğuna gerek kalmadı.
+# @api_view(['GET', 'POST']) # bu şekilde aslında APIView'e dönüştürmüş oldum.Ya da aşağıdaki gibi APIView ı kullanarak da yazabilirdim.
+# @permission_classes([IsAdminUser]) # permissonlar decorator ile de yapılabilir. Ya da yukarda olduğu gibi get_permission ile özelleştirebilirim.
+# def users(request):
+#     users = User.objects.all()
+#     serializer = UserSerializer(users, many=True)
+#     return Response(serializer.data)
+
+
+# class UsersAPIView(APIView):
+#     permission_classes = [IsAdminUser]
+
+#     def get(self, request):
+#         users = User.objects.all()
+#         serializer = UserSerializer(users, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         serializer = UserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=201)
+#         return Response(serializer.errors, status=400)

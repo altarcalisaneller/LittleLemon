@@ -11,6 +11,7 @@ class Menu(models.Model):
         return self.title
 
 
+
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField(max_length=255)
