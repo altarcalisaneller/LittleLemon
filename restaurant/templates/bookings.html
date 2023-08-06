@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section>
+  <article>
+    <h1>All Reservations</h1>
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+        <pre id="bookings"></pre>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Reservation Date</th>
+              <th>Guests</th>
+              <th>Reservation Slot</th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+          </tbody>
+        </table>
+      </div>
+      <!--End col-->
+
+      <!--Begin col-->
+      <div class="column">
+        <div class="videowrap">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d11898.289517452584!2d-87.60853049433447!3d41.79442860243028!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x880e2912ce6f7027%3A0xc0cfb5545d4a37b2!2sHyde%20Park%2C%20Chicago%2C%20IL%2C%20USA!5e0!3m2!1sen!2spt!4v1662384760663!5m2!1sen!2spt"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+      <!--End col-->
+    </div>
+    <!--End row-->
+  </article>
+</section>
+
+<!-- Add your code inside the script tags below  -->
+<script>
+  // genellikle sunucuyla veri alış verişi yapılırken json string formatında veri gönderilir ve alınır. sonra bunları kullanmak için dönüştürmek gerekir.
+  // Veriyi sunucuya gönderirken Python'da json.dumps() metodu kullanılırken, sunucudan gelen JSON verisini JavaScript tarafında işlemek için JavaScript'te JSON.parse() yöntemi kullanılır.
+
+const bookings = JSON.parse('{{ bookings|safe }}') // bookings objesi serverdan geliyor. views deki reservation methodu gönderiyor. JSON.parse() yöntemi, JSON formatındaki bir veriyi JavaScript nesnesine çevirir. safe filtresi, bookings değişkeninin güvenli bir şekilde işlenmesini ve HTML özel karakterlerinin kaçırılmamasını sağlar.
+console.log(bookings)
+const pretty_json  = JSON.stringify(bookings,null,2)
+
+// JSON.stringify() yöntemi JavaScript nesnelerini JSON formatında bir metin dizesine (string) dönüştürürken, JSON.parse() yöntemi JSON formatındaki metin dizesini JavaScript nesnesine dönüştürür. Bu iki yöntem, JSON formatında veri alışverişini ve depolamayı kolaylaştırmak için çok kullanılan ve önemli yöntemlerdir.
+
+const tableBody = document.getElementById('table-body');
+  
+bookings.forEach(booking => { // tüm rezervasyonları gösteren tablonun oluşturulması
+  const row = document.createElement('tr');
+  const nameCell = document.createElement('td');
+  nameCell.textContent = booking.fields.name;
+  const dateCell = document.createElement('td');
+  dateCell.textContent = booking.fields.booking_date;
+  const slotCell = document.createElement('td');
+  slotCell.textContent = booking.fields.reservation_slot;
+  const guestsCell = document.createElement('td');
+  guestsCell.textContent = booking.fields.no_of_guests;
+
+  row.appendChild(nameCell);
+  row.appendChild(dateCell);
+  row.appendChild(slotCell);
+  row.appendChild(guestsCell);
+  tableBody.appendChild(row);
+});
+</script>
+
+<style>
+  table {
+    border-collapse: collapse;
+    width: 80%;
+    margin-top: 35px;
+  }
+  th, td {
+    border: 1px solid black;
+    padding: 6px;
+    text-align: left;
+    width: 20%;
+  }
+  {% comment %}
+  border-collapse: collapse;: Tablonun kenar çizgilerinin birleştirilerek düzgün bir görünüm oluşturmasını sağlar. Yani, tablodaki hücreler arasındaki kenar çizgileri birleştirilir ve her hücrenin etrafındaki çerçeve düzgün bir şekilde görüntülenir. bunu yazmasan her bir hücre ayrı ayrı dikdörtgenler şeklinde gözükür.
+  {% endcomment %}
+</style>
+{% endblock %}
+
+

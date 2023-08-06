@@ -115,7 +115,7 @@ label {
     display: block;
   }
 
-input{
+input, select{
     width: 80%;
     display: block;
     padding: .5rem 1rem;
@@ -253,3 +253,14 @@ footer p {
         width: 100%;
     }
   }
+
+  /* 
+  
+  display: flex; yatayda hizalamak için 
+  flex: 1; eşit genişlikte olan iki öğeyi yanyana getirir.
+  flex-direction: row; Flex konteynerindeki öğeleri yatay (satır) yönde düzenler. Yani, içerikleri soldan sağa doğru sıralar. Varsayılan değeri row olduğundan bu satırı eklemek isteyip istemediğinize bağlı olarak bu stil belirtilebilir.
+  gap: 2rem 1rem; Flex konteyner içindeki öğeler arasında boşluk ekler. İlk değer yatay boşluğu belirler ve ikinci değer dikey boşluğu belirler. Burada 2rem yatay boşluk ve 1rem dikey boşluk eklenir.
+  
+  text-decoration: none; linkteki alt çizgiyi yok eder.
+
+  */

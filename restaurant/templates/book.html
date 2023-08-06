@@ -1,0 +1,131 @@
+{% extends 'base.html' %} <!--başka bir şablonu genişletmek veya miras almak için kullanılır.-->
+{% load static %}
+
+{% block content %}
+<section>
+  <article>
+    <h1>Make a reservation</h1>
+    <!--Begin row-->
+    <div class="row">
+      <!--Begin col-->
+      <div class="column">
+          {% csrf_token %}
+          <form method="POST" id="form">
+            <!-- {% csrf_token %} --> <!-- bu örnekte csrf kullanmamayı tercih ettim.-->
+            <p>
+              <label for="first_name">Name:</label>
+              <input type="text" placeholder="Your Name" maxlength="200" required="" id="first_name">
+            </p>
+            <p>
+              <p>
+                <label for="guests">Guests:</label>
+                <input type="number" placeholder="Guests Number" required="" id="guests">
+              </p>
+              <p>
+            <!-- Step 9: Part one -->
+              <label for="reservation_date">Reservation Date:</label>
+              <input type="date" placeholder="Reservation Date" required="" id="reservation_date">
+            </p>
+      
+            <p>
+              <label for="reservation_slot">Reservation time:</label>
+              <select id="reservation_slot">
+                <option value="0" disabled>Select time</option>
+              </select>
+            </p>
+            <button type="button" id="button">Reserve</button>
+          </form>
+      </div>
+      <!--End col-->
+
+      <!--Begin col-->
+      <div class="column">
+        <h2>Bookings For <span id="today"></span></h2>
+        <div id="bookings">
+        </div>
+      </div>
+      <!--End col-->
+    </div>
+    <!--End row-->
+
+
+
+
+  </article>
+</section>
+<script>
+
+  const date = new Date() //bugünün tarihi
+  
+  document.getElementById('reservation_date').value = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate().toString().padStart(2, "0")}` //bugünün tarihini yyyy-aa-gg formatına dönüştürür.
+
+  console.log(document.getElementById('reservation_date').value)
+  
+
+  /*  Step 10: Part two */
+ 
+  document.getElementById("reservation_date").addEventListener("change", getBookings)
+  
+  function getBookings() { // formda seçilen tarih için server a bir sorgu atar. Varsa gelen yanıtı html de ekrana basar.
+    let reserved_slots = []
+    const date = document.getElementById('reservation_date').value
+    document.getElementById('today').innerHTML = date
+    
+    fetch("{% url 'bookings' %}" + '?date=' + date)
+      .then(r => r.json())
+      .then(data => {
+        reserved_slots = []
+        bookings = ''
+        
+        /* Step 11: Part three */
+        for (item of data){
+          console.log(item.fields)
+          reserved_slots.push(item.fields.reservation_slot)
+          bookings +=  `<p>${item.fields.name} - ${formatTime(item.fields.reservation_slot)}</p>`
+        }
+        
+        /* Step 12: Part four  */
+        slot_options = `<option value="0" disabled>Select time</option>`
+
+        for (i=11; i<20; i++){
+          const label = formatTime(i)
+          if (reserved_slots.includes(i)){
+            slot_options += `<option value=${i} disabled>${label}</option>`
+          } else {
+            slot_options += `<option value=${i}>${label}</option>`
+          }
+        }
+        
+        document.getElementById('reservation_slot').innerHTML = slot_options
+        if(bookings==''){
+          bookings = "No bookings"
+        }
+        document.getElementById('bookings').innerHTML = bookings
+      })
+  }
+
+  function formatTime(time) { // saat değerini alarak 12 saatlik zaman biçimine dönüştürmek için kullanılır. 9 AM veya 9 PM gibi...
+    const ampm = time < 12 ? 'AM' : 'PM'
+    const t = time < 12 ? time : time > 12 ? time - 12 : time
+    const label = `${t} ${ampm}`
+    return label
+  }
+
+
+  document.getElementById('button').addEventListener('click', function (e) { // reserve butonuna tıklandığında form bilgilerini alır ve server a gönderir. sonrasında serverdan gelen bilgileri html de ekrana yazdırmak için getBookings fonksiyonun çağırır.
+    const formdata = {
+      first_name: document.getElementById('first_name').value,
+      guests: document.getElementById('guests').value,
+      reservation_date: document.getElementById('reservation_date').value,
+      reservation_slot: document.getElementById('reservation_slot').value,
+    }
+
+    fetch("{% url 'bookings' %}", { method: 'post', body: JSON.stringify(formdata) })
+    .then(r => r.text())
+    .then(data => {
+      getBookings()
+    })
+  })
+</script>
+{% endblock %}
+

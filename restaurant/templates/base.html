@@ -1,0 +1,53 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Little Lemon</title>
+    <meta name="description" content="A brief description" />
+    <meta
+      name="author"
+      content="Based in Chicago, Illinois, Little Lemon is a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist."
+    />
+
+    <!-- Load favicon --> 
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="{% static 'img/favicon.ico' %}"
+    />
+<!-- rel="shortcut icon": rel özelliği, bağlantının ilişki türünü belirtir. shortcut icon değeri, tarayıcının web sayfanız için kısa yol simgesi olarak kullanılacak bir favicon olduğunu belirtir.type="image/png": type özelliği, bağlantının içeriğinin medya türünü belirtir. Bu örnekte image/png değeri, faviconun PNG formatında olduğunu belirtir.href="{% static 'img/favicon.ico' %}": href özelliği, faviconun URL'sini belirtir. {% static 'img/favicon.ico' %} ifadesi, Django template dilini kullanarak faviconun statik dosyalar arasındaki yolunu belirtir.-->
+
+
+    <!-- Include your CSS files here -->
+    <link
+      rel="preload"
+      as="style"
+      href="{% static 'css/style.css' %}"
+      onload="this.rel = 'stylesheet'"
+    />
+
+<!-- preload özelliği, belirtilen kaynağın (CSS dosyası) sayfa yüklenmeden önce önceden yüklenmesini ve hazır hale getirilmesini sağlar. Bu, web sayfasının performansını artırabilir ve gecikmeleri önleyebilir. onload="this.rel = 'stylesheet'": Bu JavaScript kodu, CSS dosyası yüklendiğinde çalışır ve rel özelliğini stylesheet olarak değiştirir. rel="stylesheet" ifadesi, CSS dosyasının sayfanın stil sayfası olarak kullanılacağını belirtir. Yani, CSS dosyası yüklendiğinde bu kod, rel özelliğini stylesheet olarak güncelleyerek CSS dosyasının stil sayfası olarak kullanılmasını sağlar.-->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Karla&family=Markazi+Text:wght@500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!--Header content-->
+    {% include 'partials/_header.html' %} <!--bir şablon içerisinde başka bir şablonu dahil etmek için kullanılır.-->
+
+    <main>{% block content %} {% endblock %}</main>
+
+    <!--Footer content-->
+    {% include 'partials/_footer.html' %} 
+    <!-- Replace this comment with your code  -->
+  </body>
+</html>
